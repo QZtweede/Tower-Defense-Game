@@ -54,11 +54,16 @@ button{
     background: red;
     position: absolute;
     left: 0;
-    top: 335px;
-    animation: enemyMove 15s linear;
+    top: 700px;
+    animation: enemyMove 10s linear;
     animation-fill-mode: forwards;
 }
 
 @keyframes enemyMove{ 
+    0%{left: 0; top: 545px;}
+    10%{left: 125px; top: 545px;}
+    40%{left: 125px; top: 125px;}
+    60%{left: 405px; top: 125px;}
+    75%{left: 405px; top: 335px;}
     100%{left: 700px; top: 335px;}
 }

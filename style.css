@@ -13,6 +13,7 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
+    background: #131313;
 }
 
 #canvas{
@@ -24,6 +25,21 @@ body{
     justify-content: center;
     align-items: center;
     position: relative;
+    background: #3d405b;
+}
+
+#canvasMenu{
+    height: 700px;
+    width: 300px;
+    border: 3px solid black;
+    overflow: hidden;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    position: relative;
+    margin-left: 200px;
+    flex-direction: column;
+    background: #3d405b;
 }
 
 #gridContainer{
@@ -38,20 +54,35 @@ body{
     margin: 0;
 }
 
-#gridContainer * {
-    border: 1px solid grey;
+#gridContainer *{
+    border: 1px solid #4e516b;
     position: relative;  
-  }
+}
 
-button{
-    margin-left: 100px;
+#startButton{
+    height: 80px;
+    width: 200px;
+    background: #e07a5f;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.5s;
+    font-size: 30px;
+    font-family: 'Baloo Tammudu 2', cursive;
+    font-weight: 500;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#startButton:hover{
+    background: #e99179;   
 }
 
 .enemy{
     height: 30px;
     width: 30px;
     border-radius: 50%;
-    background: red;
+    background: #e07a5f;
     position: absolute;
     left: 0;
     top: 700px;
@@ -60,10 +91,86 @@ button{
 }
 
 @keyframes enemyMove{ 
-    0%{left: 0; top: 545px;}
-    10%{left: 125px; top: 545px;}
-    40%{left: 125px; top: 125px;}
-    60%{left: 405px; top: 125px;}
-    75%{left: 405px; top: 335px;}
-    100%{left: 700px; top: 335px;}
+    0%{left: 0; top: 580px;}
+    12%{left: 160px; top: 580px;}
+    44%{left: 160px; top: 160px;}
+    64%{left: 440px; top: 160px;}
+    80%{left: 440px; top: 370px;}
+    100%{left: 700px; top: 370px;}
+}
+
+#gridContainer 
+.grid:nth-child(81),
+.grid:nth-child(82),
+.grid:nth-child(83),
+.grid:nth-child(73),
+.grid:nth-child(63),
+.grid:nth-child(53),
+.grid:nth-child(43),
+.grid:nth-child(33),
+.grid:nth-child(23),
+.grid:nth-child(24),
+.grid:nth-child(25),
+.grid:nth-child(26),
+.grid:nth-child(27),
+.grid:nth-child(37),
+.grid:nth-child(47),
+.grid:nth-child(57),
+.grid:nth-child(58),
+.grid:nth-child(59),
+.grid:nth-child(60){
+    background: #4e516b;
+}
+
+#health, #coins{
+    font-family: 'Baloo Tammudu 2', cursive;
+    font-size: 40px;
+    font-weight: 500;
+}
+
+.container{
+    height: 50%;
+    width: 100%;
+}
+
+#restContainer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+#towersContainer{
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 25% 25% 25% 25%;
+    gap: 0px 0px;   
+}
+
+#towersContainer .grid{
+    border: 1px solid #4e516b;
+    position: relative;  
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.tower{
+    cursor: pointer;
+}
+
+.body{
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    border: 5px solid black;
+}
+
+#rifle{
+    height: 20px;
+    width: 10px;
+    background: black;
+    position: absolute;
+    left: calc(50% - 5px);
+    top: calc(50% + 19px);
 }

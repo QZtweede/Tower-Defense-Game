@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TD</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+Tammudu+2:wght@400;500&display=swap" rel="stylesheet">
 </head>
 <body>
     <div id="canvas">
@@ -112,8 +114,25 @@
             <div class="grid"></div>
         </div>
     </div>
-    <h1 id="health"> ♡ 100</h1>
-    <button id="startButton">Wave 1</button> 
+    <div id="canvasMenu">
+        <div id="towersContainer" class="container">
+            <div class="grid">
+                <div id="tower1" class="tower"><div class="body"></div><div id="rifle"></div></div>
+            </div>
+            <div class="grid"></div>
+            <div class="grid"></div>
+            <div class="grid"></div>
+            <div class="grid"></div>
+            <div class="grid"></div>
+            <div class="grid"></div>
+            <div class="grid"></div>
+        </div>
+        <div id="restContainer" class="container">
+            <h1 id="health"> ♡ 100</h1>
+            <h2 id="coins">¢ 0</h2>
+            <div id="startButton"><p style="margin-top: 15px;">Wave 1</p></div> 
+        </div>      
+    </div> 
 </body>
 <script src="main.js"></script>
 </html>

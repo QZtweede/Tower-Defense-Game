@@ -55,7 +55,7 @@ button{
     position: absolute;
     left: 0;
     top: 700px;
-    animation: enemyMove 10s linear;
+    animation: enemyMove 20s linear;
     animation-fill-mode: forwards;
 }
 

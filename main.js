@@ -8,29 +8,31 @@ var enemyArray = []
 
 async function startWave(){
     if(enemyArray.length === 0){
-        for(var i = 0; i < 5; i++){
+        for(var i = 0; i < 10; i++){
             enemy = document.createElement("div")
             canvas.appendChild(enemy)    
             enemy.setAttribute("class", "enemy")
             enemy.setAttribute("id", "enemy" + enemyVal)
             enemyArray.push(enemyVal)
             enemyVal++     
-            await sleep(1000)
+            await sleep(800)
         }
         checkHealth()
     }  
 }
 
 async function checkHealth(){
-    if( parseInt(getComputedStyle(enemy).left) >= 300){
-        health--
-        document.getElementById("health").innerHTML = "♡ 0" + health
-        firstEnemyVal = Math.min.apply(null, enemyArray)
-        var firstEnemy = document.getElementById("enemy" + firstEnemyVal)
-        firstEnemy.remove()
-        enemyArray.shift()
-    } 
-    await sleep(1000)
+    firstEnemyVal = Math.min.apply(null, enemyArray)
+    var firstEnemy = document.getElementById("enemy" + firstEnemyVal)
+    if(enemyArray.length > 0){
+        if( parseInt(getComputedStyle(firstEnemy).left) >= 700){
+            health--
+            document.getElementById("health").innerHTML = "♡ 0" + health
+            firstEnemy.remove()
+            enemyArray.shift()
+        } 
+    }
+    await sleep(300)
     checkHealth()
 }
 

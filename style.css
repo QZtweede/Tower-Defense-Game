@@ -122,6 +122,12 @@ body{
     background: #4e516b;
 }
 
+.grid{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 #health, #coins{
     font-family: 'Baloo Tammudu 2', cursive;
     font-size: 40px;
@@ -156,21 +162,7 @@ body{
 }
 
 .tower{
-    cursor: pointer;
-}
-
-.body{
-    height: 30px;
-    width: 30px;
-    border-radius: 50%;
-    border: 5px solid black;
-}
-
-#rifle{
-    height: 20px;
-    width: 10px;
-    background: black;
-    position: absolute;
-    left: calc(50% - 5px);
-    top: calc(50% + 19px);
+    height: 80px;
+    width: 80px;
+    position: fixed;
 }

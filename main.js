@@ -5,6 +5,10 @@ var enemy
 var enemyVal = 0
 var firstEnemyVal
 var enemyArray = []
+var tower1 = document.getElementById("tower1").addEventListener("click", dragAndDrop)
+var tower
+var holdingTower = false
+var gridContainer = document.getElementById("gridContainer")
 
 async function startWave(){
     if(enemyArray.length === 0){
@@ -34,6 +38,57 @@ async function checkHealth(){
     }
     await sleep(300)
     checkHealth()
+}
+
+function dragAndDrop(){
+        tower = document.createElement("img")
+        canvas.appendChild(tower)     
+        tower.setAttribute("class", "tower")
+        tower.setAttribute("src", "sprites/tower1.png")
+        holdingTower = true
+        document.addEventListener("mousemove", function(i){
+            tower.style.left = i.clientX + "px"
+            tower.style.top = i.clientY + "px"
+            if(holdingTower === false){
+                tower.style.left = ""
+                tower.style.top = ""
+            }
+        })        
+        canvas.addEventListener("click", function(i){
+            if(holdingTower === true){
+                holdingTower = false
+                var towerX = Math.round(i.clientX / 70 - 2)
+                var towerY = Math.round(i.clientY / 70)
+                if (towerX > 10 || towerY > 10 || towerY < 1 || towerX < 1){
+                    tower.remove()
+                    // refund money
+                    var isTowerRemoved = true
+                }
+                else{
+                    isTowerRemoved = false
+                }
+                if (towerX === 10){
+                    towerY++
+                    towerX = 0 
+                }
+                towerY = towerY - 1
+                var positionVal = towerY.toString()  + towerX.toString()
+                let position = gridContainer.children[positionVal - 1]
+                if(isTowerRemoved === false){
+                    position.appendChild(tower)
+                    if(getComputedStyle(position).background == "rgb(78, 81, 107) none repeat scroll 0% 0% / auto padding-box border-box")
+                        {
+                            tower.remove()
+                            // refund money
+                            console.log("test")
+                        }                    
+                }                            
+            }
+        })
+}
+
+function placeTower(){
+    console.log("test")
 }
 
 function sleep(time) {

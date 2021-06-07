@@ -166,3 +166,10 @@ body{
     width: 80px;
     position: absolute;
 }
+
+.bullet{
+    height: 8px;
+    width: 8px;
+    background: rgb(95, 244, 255);
+    border-radius: 50%;
+}

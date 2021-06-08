@@ -1,5 +1,5 @@
 var canvas = document.getElementById("canvas")
-var buttonClicked = document.getElementById("startButton").addEventListener("click", startWave)
+var button = document.getElementById("startButton").addEventListener("click", startWave)
 var health = 100
 var enemy
 var enemyVal = 0
@@ -19,7 +19,13 @@ var areEnemiesOnBoard = false
 var checkingUpdates = false
 var v = 0
 var once = true
+var onceV2 = true
+var onceV3 = true
 var bullet
+var position
+var enemyHealth = 5
+var waveVal = 1
+var i
 
 async function startWave(){
     areEnemiesOnBoard = true
@@ -35,7 +41,9 @@ async function startWave(){
                 checkingRadius = true
                 towerArray.every(checkRadius)
                 checkHealth()
+                checkWave()
             }
+            onceV2 = true
             await sleep(800)           
         }
     }  
@@ -96,7 +104,7 @@ function dragAndDrop(){
                 }
                 towerY--
                 var positionVal = towerY.toString()  + towerX.toString()
-                let position = gridContainer.children[positionVal - 1]
+                position = gridContainer.children[positionVal - 1]
                 if(isTowerRemoved === false){
                     position.appendChild(tower)
                     if(getComputedStyle(position).background == "rgb(78, 81, 107) none repeat scroll 0% 0% / auto padding-box border-box")
@@ -111,36 +119,68 @@ function dragAndDrop(){
 
 async function checkRadius(){ 
     await sleep(50)
-    firstEnemyPosition = document.getElementById("enemy" + enemyArray[v]).getBoundingClientRect() 
-    for(var i = 0; i < towerArray.length; i++){
-        towerPosition = towerArray[i].getBoundingClientRect()
-        towerPosArray.push(towerPosition)
-        if(areEnemiesOnBoard === true){       
-            if(towerPosArray[i].left - firstEnemyPosition.left < 170 && firstEnemyPosition.bottom - towerPosArray[i].bottom < 170 && towerPosArray[i].left - firstEnemyPosition.left > -170 && firstEnemyPosition.bottom - towerPosArray[i].bottom > -170){
-                var dY = towerPosArray[i].bottom - firstEnemyPosition.bottom
-                var dX = towerPosArray[i].left - firstEnemyPosition.left
-                var Rads = Math.atan2(dY, dX)
-                var Degs = Rads * (180/Math.PI) - 100
-                towerArray[i].style.transform = "rotate(" + Degs + "deg)"
-                if(once === true){
-                    shoot()
-                    once = false
-                }           
-            }
-        } 
-        if(towerPosArray[i].left - firstEnemyPosition.left < -150 ||towerPosArray[i].bottom - firstEnemyPosition.bottom > 150){
-            v++
-        }
+    if(enemyArray.length > 0){
+        firstEnemyPosition = document.getElementById("enemy" + enemyArray[v]).getBoundingClientRect() 
+        for(i = 0; i < towerArray.length; i++){
+            towerPosition = towerArray[i].getBoundingClientRect()
+            towerPosArray.push(towerPosition)
+            if(areEnemiesOnBoard === true){       
+                if(towerPosArray[i].left - firstEnemyPosition.left < 170 && firstEnemyPosition.bottom - towerPosArray[i].bottom < 170 && towerPosArray[i].left - firstEnemyPosition.left > -170 && firstEnemyPosition.bottom - towerPosArray[i].bottom > -170){
+                    var dY = towerPosArray[i].bottom - firstEnemyPosition.bottom
+                    var dX = towerPosArray[i].left - firstEnemyPosition.left
+                    var Rads = Math.atan2(dY, dX)
+                    var Degs = Rads * (180/Math.PI) - 100
+                    towerArray[i].style.transform = "rotate(" + Degs + "deg)"
+                    if(once === true){
+                        shoot()
+                        console.log("test")
+                        once = false
+                    }           
+                }
+            } 
+            // if(towerPosArray[i].left - firstEnemyPosition.left < -150 ||towerPosArray[i].bottom - firstEnemyPosition.bottom > 150){
+            //     v++
+            // }
+        }   
+        checkRadius()
     }   
-    checkRadius()
 }
 
 async function shoot(){
-    bullet = document.createElement("img")
-    canvas.appendChild(bullet)
-    bullet.setAttribute("class", "bullet")
-    await sleep(800)
-    once = true
+    for(var j = 0; j < towerArray.length; j++){
+        bullet = document.createElement("div")
+        canvas.appendChild(bullet)
+        bullet.setAttribute("class", "bullet")
+        bullet.style.left = towerPosArray[j].left - 110 + "px"
+        bullet.style.top = towerPosArray[j].top + 10 + "px"
+        bullet.style.left = getComputedStyle(firstEnemy).left
+        bullet.style.top = getComputedStyle(firstEnemy).top
+        if(bullet.style.left < getComputedStyle(firstEnemy).left + 5){
+            enemyHealth--
+            firstEnemy.innerHTML = enemyHealth
+            if(enemyHealth === 0){
+                firstEnemy.remove()
+                enemyArray.shift()
+                enemyHealth = 5
+            }
+        }    
+        await sleep(100)
+        bullet.remove()       
+    }   
+    await sleep(1000)
+        once = true
+}
+
+async function checkWave(){
+    await sleep(1000)
+    if(onceV2 === true){
+        if(enemyArray.length === 0){
+            waveVal++
+            document.getElementById("buttonText").innerHTML = "Wave " + waveVal
+            onceV2 = false
+        }   
+    }   
+    checkWave()
 }
 
 function sleep(time) {

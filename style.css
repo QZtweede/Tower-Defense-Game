@@ -54,7 +54,7 @@ body{
     margin: 0;
 }
 
-#gridContainer *{
+#gridContainer .grid{
     border: 1px solid #4e516b;
     position: relative;  
 }
@@ -88,6 +88,10 @@ body{
     top: 700px;
     animation: enemyMove 20s linear;
     animation-fill-mode: forwards;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: niagara solid;
 }
 
 @keyframes enemyMove{ 
@@ -165,6 +169,7 @@ body{
     height: 80px;
     width: 80px;
     position: absolute;
+    z-index: 2;
 }
 
 .bullet{
@@ -172,4 +177,7 @@ body{
     width: 8px;
     background: rgb(95, 244, 255);
     border-radius: 50%;
+    transition: 0.1s;
+    position: absolute;
+    z-index: 1;
 }

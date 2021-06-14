@@ -1,6 +1,6 @@
 var canvas = document.getElementById("canvas")
 var button = document.getElementById("startButton").addEventListener("click", startWave)
-var health = 100
+var health = 20  
 var enemy
 var enemyVal = 0
 var firstEnemy
@@ -29,18 +29,20 @@ var waveHealth = 1
 var waveVal = 1
 var enemyCount = 4
 var i
-var currency = 100
-var enemySpeed = 25
+var points = 0
+var enemySpeed = 20
+var towerAmount = 3
 
-    document.getElementById("coins").innerHTML = "¢ " + currency
+    function checkUpdates(){    //Start loop in updatefuncties
+        towerArray.every(checkRadius)
+        checkHealth()
+        checkWave()
+    }
 
-
-
-async function startWave(){
+    async function startWave(){     //Spawn enemies
     areEnemiesOnBoard = true
     onceV2 = true
-    console.log(waveHealth)
-    if(enemyArray.length === 0){
+    if(enemyArray.length === 0){    //Check of er geen andere wave bezig is
         for(var i = 0; i < enemyCount; i++){
             enemy = document.createElement("div")
             canvas.appendChild(enemy)    
@@ -49,23 +51,18 @@ async function startWave(){
             enemyArray.push(enemyVal)
             enemyVal++     
             enemy.style.animation = "enemyMove " + enemySpeed +"s linear";
-            if(checkingUpdates === false){
-                checkingRadius = true
-                towerArray.every(checkRadius)
-                checkHealth()
-                checkWave()
-            }
+            checkUpdates()         
             await sleep(800)           
         }
     }  
 }
 
-async function checkHealth(){
-    document.getElementById("coins").innerHTML = "¢ " + currency
+async function checkHealth(){       //Check of de health van de player
+    document.getElementById("coins").innerHTML = "P " + points
     firstEnemyVal = Math.min.apply(null, enemyArray)
     firstEnemy = document.getElementById("enemy" + firstEnemyVal)
     if(enemyArray.length > 0){
-        if( parseInt(getComputedStyle(firstEnemy).left) >= 700){
+        if( parseInt(getComputedStyle(firstEnemy).left) >= 600){    //Check of de enemies ver genoeg zijn gekomen
             health--
             document.getElementById("health").innerHTML = "♡ 0" + health
             firstEnemy.remove()
@@ -75,20 +72,22 @@ async function checkHealth(){
 
         }
     }
+    if(health <= 0 && onceV3 === true){     //Check of de player verloren heeft
+        alert("GAME OVER \nYour final score was: " + points + "P \nYou can refresh this page if you want to play again")
+        onceV3 = false
+    }
     await sleep(300)
     checkHealth()
 }
 
-function dragAndDrop(){
-    if(currency >= 100){
+function dragAndDrop(){     //Spawn torens
+    if(towerAmount >= 1 && areEnemiesOnBoard === false){    //Check of het limiet van 3 torens bereikt is
         tower = document.createElement("img")
         canvas.appendChild(tower)     
         tower.setAttribute("class", "tower")
         tower.setAttribute("src", "sprites/tower1.png")
         tower.setAttribute("id", "tower" + towerVal)
         towerVal++ 
-        towerArray.push(tower)
-        console.log(towerArray)
         holdingTower = true
         document.addEventListener("mousemove", function(i){
             tower.style.left = i.clientX - 200 + "px"
@@ -98,12 +97,12 @@ function dragAndDrop(){
                 tower.style.top = ""
             }
         })        
-        canvas.addEventListener("click", function(i){
+        canvas.addEventListener("click", function(i){       //Toren volgt muis
             if(holdingTower === true){
                 holdingTower = false
                 var towerX = Math.round(i.clientX / 70 - 2)
                 var towerY = Math.round(i.clientY / 70)
-                if (towerX > 10 || towerY > 10 || towerY < 1 || towerX < 1){
+                if (towerX > 10 || towerY > 10 || towerY < 1 || towerX < 1){     //Check of toren buiten canvas geplaatst is
                     tower.remove()
                     var isTowerRemoved = true
                 }
@@ -118,13 +117,21 @@ function dragAndDrop(){
                 var positionVal = towerY.toString()  + towerX.toString()
                 position = gridContainer.children[positionVal - 1]
                 if(isTowerRemoved === false){
-                    if(getComputedStyle(position).background == "rgb(78, 81, 107) none repeat scroll 0% 0% / auto padding-box border-box")
+                    if(getComputedStyle(position).background == "rgb(78, 81, 107) none repeat scroll 0% 0% / auto padding-box border-box")  //Check of toren niet op het pad van de enemies is geplaatst
                         {
                             tower.remove()
                         }   
-                    position.appendChild(tower)
-                    currency = currency - 100  
-                    document.getElementById("coins").innerHTML = "¢ " + currency
+                    else{
+                        position.appendChild(tower)
+                        towerAmount = towerAmount - 1  
+                        document.getElementById("price").innerText = towerAmount
+                        document.getElementById("coins").innerHTML = "P " + points
+                        onceV4 = true
+                        towerArray.push(tower)
+                        checkUpdates()
+                        checkRadius()
+                    }
+                    
                 }  
                                         
             }
@@ -132,15 +139,15 @@ function dragAndDrop(){
     }  
 }
 
-async function checkRadius(){ 
+async function checkRadius(){   //Check of enemies binnen de radius van de torens zitten
     await sleep(50)
     if(enemyArray.length > 0){
         firstEnemyPosition = document.getElementById("enemy" + enemyArray[v]).getBoundingClientRect() 
-        for(i = 0; i < towerArray.length; i++){
-            towerPosition = towerArray[i].getBoundingClientRect()
-            towerPosArray.push(towerPosition)
+        for(i = 0; i < towerArray.length; i++){       
+            towerPosition = towerArray[i].getBoundingClientRect()   
+                towerPosArray.push(towerPosition)
             if(areEnemiesOnBoard === true){       
-                if(towerPosArray[i].left - firstEnemyPosition.left < 170 && firstEnemyPosition.bottom - towerPosArray[i].bottom < 170 && towerPosArray[i].left - firstEnemyPosition.left > -170 && firstEnemyPosition.bottom - towerPosArray[i].bottom > -170){
+                if(towerPosArray[i].left - firstEnemyPosition.left < 170 && firstEnemyPosition.bottom - towerPosArray[i].bottom < 170 && towerPosArray[i].left - firstEnemyPosition.left > -170 && firstEnemyPosition.bottom - towerPosArray[i].bottom > -170){     //Radius van torens
                     if(once === true){
                         shoot()
                         once = false
@@ -152,45 +159,41 @@ async function checkRadius(){
                     towerArray[i].style.transform = "rotate(" + Degs + "deg)"                      
                 }
             } 
-            if(towerPosArray[i].left - firstEnemyPosition.left < -150 ||towerPosArray[i].bottom - firstEnemyPosition.bottom > 150){
-                enemyArray.shift()
-            }
         }   
         checkRadius()
     }   
 }
 
-async function shoot(){
-    for(var j = 0; j < towerArray.length; j++){
+async function shoot(){     //Functie die zorgt voor het schieten als de enemy in de radius is
         bullet = document.createElement("div")
         canvas.appendChild(bullet)
         bullet.setAttribute("class", "bullet")
-        bullet.style.left = towerPosArray[j].left - 110 + "px"
-        bullet.style.top = towerPosArray[j].top + 10 + "px"
+        bullet.style.left = towerPosArray[i].left - 110 + "px"
+        bullet.style.top = towerPosArray[i].top + 10 + "px"
         bullet.style.left = getComputedStyle(firstEnemy).left
         bullet.style.top = getComputedStyle(firstEnemy).top
-        if(bullet.style.left < getComputedStyle(firstEnemy).left + 5){
+        if(bullet.style.left < getComputedStyle(firstEnemy).left + 5){      //Collision detection
             enemyHealth--
             firstEnemy.innerHTML = enemyHealth
-            if(enemyHealth <= 0){
+            if(enemyHealth <= 0){       //Check of enemy geen health meer heeft
                 firstEnemy.remove()
                 enemyArray.shift()
                 enemyHealth = waveHealth
-                currency = currency + 10
-            }
-        }    
+                points = points + 10
+            }  
         await sleep(100)
-        bullet.remove()       
+        
+        bullet.remove()
     }   
     await sleep(600)
-        once = true
+    once = true
+       
 }
 
-async function checkWave(){
+async function checkWave(){     //Check of een nieuwe wave aangeroepen kan worden
     await sleep(1000)
     if(onceV2 === true){
-        if(enemyArray.length === 0){
-                console.log("test")
+        if(enemyArray.length === 0){     //Check of alle enemies van deze wave weg zijn
                 waveVal++
                 document.getElementById("buttonText").innerHTML = "Wave " + waveVal
                 onceV2 = false
@@ -202,6 +205,6 @@ async function checkWave(){
     checkWave()
 }
 
-function sleep(time) {
+function sleep(time) {      //Functie om pauzes te maken
     return new Promise(resolve => setTimeout(resolve, time));
   }

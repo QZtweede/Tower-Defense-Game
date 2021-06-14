@@ -86,7 +86,7 @@ body{
     position: absolute;
     left: 0;
     top: 700px;
-    animation: enemyMove 20s linear;
+    /* animation: enemyMove 20s linear; */
     animation-fill-mode: forwards;
     display: flex;
     justify-content: center;
@@ -163,6 +163,25 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
+    font-family: 'Baloo Tammudu 2', cursive;
+
+}
+
+#price{
+    opacity: 1;
+    z-index: 10;
+    font-size: 60px;
+    margin-top: 30px;
+    font-weight: bold;
+    pointer-events: none;
+    transition: 0.3s;
+}
+
+#towersContainer .tower:hover ~ #price{
+    color: red;
+    opacity: 0;
+    pointer-events: none;
+    
 }
 
 .tower{

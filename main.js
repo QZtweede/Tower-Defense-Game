@@ -21,35 +21,47 @@ var v = 0
 var once = true
 var onceV2 = true
 var onceV3 = true
+var onceV4 = true
 var bullet
 var position
-var enemyHealth = 5
+var enemyHealth = Math.round(Math.random(1, waveHealth))
+var waveHealth = 1
 var waveVal = 1
+var enemyCount = 4
 var i
+var currency = 100
+var enemySpeed = 25
+
+    document.getElementById("coins").innerHTML = "¢ " + currency
+
+
 
 async function startWave(){
     areEnemiesOnBoard = true
+    onceV2 = true
+    console.log(waveHealth)
     if(enemyArray.length === 0){
-        for(var i = 0; i < 10; i++){
+        for(var i = 0; i < enemyCount; i++){
             enemy = document.createElement("div")
             canvas.appendChild(enemy)    
             enemy.setAttribute("class", "enemy")
             enemy.setAttribute("id", "enemy" + enemyVal)
             enemyArray.push(enemyVal)
             enemyVal++     
+            enemy.style.animation = "enemyMove " + enemySpeed +"s linear";
             if(checkingUpdates === false){
                 checkingRadius = true
                 towerArray.every(checkRadius)
                 checkHealth()
                 checkWave()
             }
-            onceV2 = true
             await sleep(800)           
         }
     }  
 }
 
 async function checkHealth(){
+    document.getElementById("coins").innerHTML = "¢ " + currency
     firstEnemyVal = Math.min.apply(null, enemyArray)
     firstEnemy = document.getElementById("enemy" + firstEnemyVal)
     if(enemyArray.length > 0){
@@ -68,6 +80,7 @@ async function checkHealth(){
 }
 
 function dragAndDrop(){
+    if(currency >= 100){
         tower = document.createElement("img")
         canvas.appendChild(tower)     
         tower.setAttribute("class", "tower")
@@ -92,7 +105,6 @@ function dragAndDrop(){
                 var towerY = Math.round(i.clientY / 70)
                 if (towerX > 10 || towerY > 10 || towerY < 1 || towerX < 1){
                     tower.remove()
-                    // refund money
                     var isTowerRemoved = true
                 }
                 else{
@@ -106,15 +118,18 @@ function dragAndDrop(){
                 var positionVal = towerY.toString()  + towerX.toString()
                 position = gridContainer.children[positionVal - 1]
                 if(isTowerRemoved === false){
-                    position.appendChild(tower)
                     if(getComputedStyle(position).background == "rgb(78, 81, 107) none repeat scroll 0% 0% / auto padding-box border-box")
                         {
                             tower.remove()
-                            // refund money
-                        }                    
-                }                           
+                        }   
+                    position.appendChild(tower)
+                    currency = currency - 100  
+                    document.getElementById("coins").innerHTML = "¢ " + currency
+                }  
+                                        
             }
         }) 
+    }  
 }
 
 async function checkRadius(){ 
@@ -126,21 +141,20 @@ async function checkRadius(){
             towerPosArray.push(towerPosition)
             if(areEnemiesOnBoard === true){       
                 if(towerPosArray[i].left - firstEnemyPosition.left < 170 && firstEnemyPosition.bottom - towerPosArray[i].bottom < 170 && towerPosArray[i].left - firstEnemyPosition.left > -170 && firstEnemyPosition.bottom - towerPosArray[i].bottom > -170){
+                    if(once === true){
+                        shoot()
+                        once = false
+                    }      
                     var dY = towerPosArray[i].bottom - firstEnemyPosition.bottom
                     var dX = towerPosArray[i].left - firstEnemyPosition.left
                     var Rads = Math.atan2(dY, dX)
                     var Degs = Rads * (180/Math.PI) - 100
-                    towerArray[i].style.transform = "rotate(" + Degs + "deg)"
-                    if(once === true){
-                        shoot()
-                        console.log("test")
-                        once = false
-                    }           
+                    towerArray[i].style.transform = "rotate(" + Degs + "deg)"                      
                 }
             } 
-            // if(towerPosArray[i].left - firstEnemyPosition.left < -150 ||towerPosArray[i].bottom - firstEnemyPosition.bottom > 150){
-            //     v++
-            // }
+            if(towerPosArray[i].left - firstEnemyPosition.left < -150 ||towerPosArray[i].bottom - firstEnemyPosition.bottom > 150){
+                enemyArray.shift()
+            }
         }   
         checkRadius()
     }   
@@ -158,16 +172,17 @@ async function shoot(){
         if(bullet.style.left < getComputedStyle(firstEnemy).left + 5){
             enemyHealth--
             firstEnemy.innerHTML = enemyHealth
-            if(enemyHealth === 0){
+            if(enemyHealth <= 0){
                 firstEnemy.remove()
                 enemyArray.shift()
-                enemyHealth = 5
+                enemyHealth = waveHealth
+                currency = currency + 10
             }
         }    
         await sleep(100)
         bullet.remove()       
     }   
-    await sleep(1000)
+    await sleep(600)
         once = true
 }
 
@@ -175,9 +190,13 @@ async function checkWave(){
     await sleep(1000)
     if(onceV2 === true){
         if(enemyArray.length === 0){
-            waveVal++
-            document.getElementById("buttonText").innerHTML = "Wave " + waveVal
-            onceV2 = false
+                console.log("test")
+                waveVal++
+                document.getElementById("buttonText").innerHTML = "Wave " + waveVal
+                onceV2 = false
+                waveHealth++
+                enemyCount++  
+                enemySpeed = enemySpeed - 0.2
         }   
     }   
     checkWave()
